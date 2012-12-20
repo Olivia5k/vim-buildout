@@ -82,6 +82,12 @@ endfunction
 
 function! BuildoutBufInit()
   call s:BufCommands()
+
+  if expand('%') =~ 'buildout.cfg$'
+    " Switch to paragraph folding!
+    setlocal foldmethod=expr
+           \ foldexpr=getline(v:lnum)=~'^\\s*$'&&getline(v:lnum+1)=~'\\S'?'<1':1
+  endif
 endfunction
 
 if !exists('s:slash')
