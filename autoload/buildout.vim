@@ -59,6 +59,7 @@ endfunction
 
 function! s:Buildout(...)
   let cmd = s:join(b:buildout_root, 'bin', a:0 ? a:1 : 'buildout')
+  let cmd .= ' -c ' . s:join(b:buildout_root, 'buildout.cfg')
   exe "!".cmd
 endfunction
 
@@ -80,7 +81,7 @@ function! s:BufCommands()
   " com! -buffer -nargs=? -complete=customlist,s:Bootcomplete Bootstrap :call s:Bootstrap(<f-args>)
 endfunction
 
-function! BuildoutBufInit()
+function! buildout#BufInit()
   call s:BufCommands()
 
   if expand('%') =~ 'buildout.cfg$'
@@ -93,6 +94,11 @@ endfunction
 if !exists('s:slash')
   let s:slash = has('win32') || has('win64') ? '\' : '/'
 endif
+
+augroup buildoutAutoBuild
+  autocmd!
+  autocmd BufWritePost buildout.cfg call s:Buildout()
+augroup END
 
 " }}}
 

@@ -6,15 +6,9 @@ let g:loaded_buildout = 1
 let s:cpo_save = &cpo
 set cpo&vim
 
-function! s:autoload()
-  if !exists("g:autoloaded_buildout")
-    runtime! autoload/buildout.vim
-  endif
-endfunction
-
 function! s:Detect(filename)
   if exists('b:buildout_root')
-    return BuildoutBufInit()
+    return buildout#BufInit()
   endif
 
   let fn = substitute(fnamemodify(a:filename, ":p"), '\c^file://', '', '')
@@ -26,14 +20,9 @@ function! s:Detect(filename)
 
     if filereadable(fn . '/buildout.cfg')
       let b:buildout_root = fn
-      break
+      return buildout#BufInit()
     endif
   endwhile
-
-  if exists('b:buildout_root')
-    call s:autoload()
-    call BuildoutBufInit()
-  endif
 endfunction
 
 augroup buildoutDetect
